@@ -3,7 +3,7 @@
 /**
  * read_line - read input from stdin
  *
- * Retunr: line or NULL on EOF
+ * Return: pointer to string or NULL on EOF
  */
 char *read_line(void)
 {
@@ -25,14 +25,4 @@ char *read_line(void)
 		line[nread - 1] = '\0';
 
 	return (line);
-}
-
-/**
- * print_error - prints error message
- * @name: program name
- * @command: command not found
- */
-void print_error(char *name, char *command)
-{
-	fprintf(stderr, "%s: 1: %s: oh no, try again\n", name, command);
 }

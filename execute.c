@@ -1,11 +1,8 @@
 #include "shell.h"
+
 /**
  * execute_command - executes a single command
- * @command: command to execute
- *
- * Description: forks a child process to execute the command
- * using execve. Does not print messages to stderr; just exits
- * child with status 127 if execve fails.
+ * @command: command to execute (absolute path)
  */
 void execute_command(char *command)
 {
