@@ -1,34 +1,50 @@
 #include "shell.h"
 
 /**
- * main - Shell Function. Takes commands as input and execute the programs
- * linked to these commands.
- * @ac: Number of arguments provided (Void)
- * @av: Array with the arguments provided (Void)
- * @env: Environment to pass into the childrenn processes.
- * Return: 1 on error. 0 on success.
+ * main - simple shell with PATH
+ * @ac: void
+ * @av: void
+ * @env: environment variable
+ *
+ * Return: 0
  */
 int main(int ac, char **av, char **env)
 {
-	size_t len;
+	char *line = NULL;
+	size_t len = 0;
 	ssize_t nread;
-	char *str;
 	char **args;
-	(void)av;
+
 	(void)ac;
+	(void)av;
 
 	while (1)
 	{
-		str = NULL;
-		nread = getline(&str, &len, stdin);
+		if (isatty(STDIN_FILENO))
+			printf("$ ");
+
+		nread = getline(&line, &len, stdin);
 		if (nread == -1)
 			break;
-		args = strtok_array(str);
+
+		args = strtok_array(line);
 		if (!args)
 			continue;
+
+		if (args[0][0] != '/' && args[0][0] != '.')
+		{
+			if (!path(args, env))
+			{
+				fprintf(stderr, "%s: command not found\n", args[0]);
+				free_arr(args);
+				continue;
+			}
+		}
+
 		fork_(args, env);
 		free_arr(args);
 	}
-	free(str);
+
+	free(line);
 	return (0);
 }

@@ -9,22 +9,22 @@
 
 void fork_(char *args[], char **env)
 {
-	pid_t child_pid;
+	pid_t pid;
 	int status;
 
-	child_pid = fork();
-	if (child_pid == -1)
+	pid = fork();
+	if (pid < 0)
 	{
+		perror("fork");
 		free_arr(args);
-		perror("Error");
 		exit(1);
 	}
-	if (child_pid == 0)
+	if (pid == 0)
 	{
 		if (execve(args[0], args, env) == -1)
 		{
+			perror("execve");
 			free_arr(args);
-			perror("Error");
 			exit(1);
 		}
 	}
@@ -32,8 +32,8 @@ void fork_(char *args[], char **env)
 	{
 		if (wait(&status) == -1)
 		{
+			perror("wait");
 			free_arr(args);
-			perror("Error");
 			exit(1);
 		}
 	}
