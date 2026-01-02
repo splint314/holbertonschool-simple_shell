@@ -7,6 +7,7 @@
 void shell_loop(void)
 {
 	char *line;
+	char *ptr;
 	int interactive;
 
 	interactive = isatty(STDIN_FILENO);
@@ -24,11 +25,12 @@ void shell_loop(void)
 			break;
 		}
 
-		while (*line == ' ' || *line == '\t' || *line == '\n')
-			line++;
+		ptr = line;
+		while (*ptr == ' ' || *ptr == '\t' || *ptr == '\n')
+			ptr++;
 
-		if (*line != '\0')
-			execute_command(line);
+		if (*ptr != '\0')
+			execute_command(ptr);
 
 		free(line);
 	}
