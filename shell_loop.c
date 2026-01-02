@@ -4,7 +4,7 @@
  * shell_loop - main shell loop
  * @name: program name
  */
-void shell_loop(char *name)
+void shell_loop(void)
 {
 	char *line;
 	int interactive;
@@ -25,7 +25,7 @@ void shell_loop(char *name)
 		}
 
 		if (line[0] != '\0')
-			execute_command(line, name);
+			execute_command(line);
 
 		free(line);
 	}
