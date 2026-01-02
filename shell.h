@@ -12,17 +12,7 @@ extern char **environ;
 
 /* shell loop */
 void shell_loop(void);
-
-/* split lines into arguments*/
-char **split_line(char *line);
-
 /* execution */
-void execute_command(char *command);
-
-/* path */
-char *resolve_path(char *command);
-
-/* utils */
-char *read_line(void);
+int execute_command(char *command);
 
 #endif
