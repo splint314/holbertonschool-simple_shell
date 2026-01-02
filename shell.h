@@ -19,6 +19,5 @@ char *resolve_path(char *command);
 
 /* utils */
 char *read_line(void);
-void print_error(char *name, char *command);
 
 #endif
