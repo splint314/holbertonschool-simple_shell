@@ -7,21 +7,19 @@
  */
 char *read_line(void)
 {
-	char *line;
-	size_t len;
+	char *line = NULL;
+	size_t len = 0;
 	ssize_t nread;
 
-	line = NULL;
-	len = 0;
 	nread = getline(&line, &len, stdin);
-
 	if (nread == -1)
 	{
-		free(line);
+		if (line)
+			free(line);
 		return (NULL);
 	}
 
-	if (line[nread - 1] == '\n')
+	if (nread > 0 && line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
 
 	return (line);
