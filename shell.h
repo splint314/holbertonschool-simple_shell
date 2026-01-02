@@ -8,11 +8,9 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-extern char **environ;
-
-/* shell loop */
-void shell_loop(void);
-/* execution */
-int execute_command(char *command);
+size_t strtok_array_len(char *str);
+char **strtok_array(char *str);
+void free_arr(char **args);
+void fork_(char *args[], char **env);
 
 #endif
