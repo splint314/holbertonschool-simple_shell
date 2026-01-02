@@ -2,7 +2,7 @@
 
 /**
  * shell_loop - main shell loop
- * @name: program name
+ *
  */
 void shell_loop(void)
 {
@@ -24,7 +24,9 @@ void shell_loop(void)
 			break;
 		}
 
-		if (line[0] != '\0')
+		while (*line == ' ')
+			line++;
+		if (*line != '\0')
 			execute_command(line);
 
 		free(line);
