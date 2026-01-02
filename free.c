@@ -8,6 +8,9 @@ void free_arr(char **args)
 {
 	size_t i = 0;
 
+	if (!args)
+		return;
+
 	while (args[i])
 	{
 		free(args[i]);
