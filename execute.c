@@ -1,83 +1,34 @@
 #include "shell.h"
 
-#define TOK_BUFSIZE 64
-#define TOK_DELIM " \t\r\n\a"
-
 /**
- * split_line - Splits a command line into arguments
- * @line: The string to be split
+ * execute_command - executes a single command without arguments
+ * @command: the command to execute (full path required)
  *
- * This function parses the string `line` and splits it into tokens
- * separated by spaces, tabs, carriage returns, or alerts
- * (as defined by TOK_DELIM). It dynamically allocates an array of
- * pointers to the tokens and returns it. The last element of the
- * array is always NULL to indicate the end.
- *
- * Return: An array of strings (tokens), or exits the program if
- * memory allocation fails.
+ * Return: 0 on success, 1 if command cannot be executed
  */
-char **split_line(char *line)
-{
-	int bufsize = TOK_BUFSIZE, position = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
-	char *token;
-
-	if (!tokens)
-		exit(1);
-
-	token = strtok(line, TOK_DELIM);
-	while (token)
-	{
-		tokens[position++] = token;
-
-		if (position >= bufsize)
-		{
-			bufsize += TOK_BUFSIZE;
-			tokens = realloc(tokens, bufsize * sizeof(char *));
-			if (!tokens)
-				exit(1);
-		}
-
-		token = strtok(NULL, TOK_DELIM);
-	}
-	tokens[position] = NULL;
-	return tokens;
-}
-
-/**
- * execute_command - executes a single command
- * @command: command to execute (absolute path)
- */
-void execute_command(char *line)
+int execute_command(char *command)
 {
 	pid_t pid;
 	int status;
-	char **args;
+	char *args[2];
 
-	args = split_line(line);
-	if (!args[0])
-	{
-		free(args);
-		return;
-	}
+	args[0] = command;
+	args[1] = NULL;
 
 	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		return (1);
+	}
 	if (pid == 0)
 	{
-		if (execve(args[0], args, NULL) == -1)
-			exit(1);
-	}
-	else if (pid < 0)
-	{
-		exit(1);
+		execve(command, args, environ);
+		fprintf(stderr, "%s: 1: %s: not found\n", "./hsh", command);
+		exit(127);
 	}
 	else
-	{
-		do
-		{
-			waitpid(pid, &status, WUNTRACED);
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-	}
+		wait(&status);
 
-	free(args);
+	return (0);
 }
