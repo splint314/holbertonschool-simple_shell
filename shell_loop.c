@@ -24,8 +24,9 @@ void shell_loop(void)
 			break;
 		}
 
-		while (*line == ' ')
+		while (*line && isspace((unsigned char)*line))
 			line++;
+
 		if (*line != '\0')
 			execute_command(line);
 
