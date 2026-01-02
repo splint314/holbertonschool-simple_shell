@@ -1,12 +1,16 @@
 #include "shell.h"
 /**
- * execute_command - executes a command
+ * execute_command - executes a single command
  * @command: command to execute
- * @name: program name
+ *
+ * Description: forks a child process to execute the command
+ * using execve. Does not print messages to stderr; just exits
+ * child with status 127 if execve fails.
  */
-void execute_command(char *command, char *name)
+void execute_command(char *command)
 {
 	pid_t pid;
+	int status;
 	char *argv[2];
 	char *path;
 
@@ -23,10 +27,9 @@ void execute_command(char *command, char *name)
 	{
 		if (execve(path, argv, environ) == -1)
 		{
-			print_error(name, command);
 			_exit(127);
 		}
 	}
 	else
-		wait(NULL);
+		waitpid(pid, &status, 0);
 }

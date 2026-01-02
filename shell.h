@@ -9,10 +9,10 @@
 extern char **environ;
 
 /* shell loop */
-void shell_loop(char *name);
+void shell_loop(void);
 
 /* execution */
-void execute_command(char *command, char *name);
+void execute_command(char *command);
 
 /* path */
 char *resolve_path(char *command);
