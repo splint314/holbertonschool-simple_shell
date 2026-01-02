@@ -13,10 +13,7 @@ char **strtok_array(char *str)
 
 	args = malloc(bufsize * sizeof(char *));
 	if (!args)
-	{
-		free(str);
 		exit(1);
-	}
 
 	token = strtok(str, " \t\r\n");
 	while (token)
@@ -30,7 +27,6 @@ char **strtok_array(char *str)
 				free(args[i]);
 			}
 			free(args);
-			free(str);
 			exit(1);
 		}
 		i++;
@@ -39,14 +35,17 @@ char **strtok_array(char *str)
 			bufsize += 64;
 			args = realloc(args, bufsize * sizeof(char *));
 			if (!args)
-			{
-				free(str);
 				exit(1);
-			}
 		}
 		token = strtok(NULL, " \t\r\n");
 	}
 	args[i] = NULL;
-	free(str);
-	return (i == 0 ? NULL : args);
+
+	if (i == 0)
+	{
+		free(args);
+		return NULL;
+	}
+
+	return (args);
 }
