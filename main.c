@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * main - simple shell with PATH
- * @ac: void
- * @av: void
- * @env: environment variable
+ * main - Simple shell with PATH handling
+ * @ac: Argument count
+ * @av: Argument vector
+ * @env: Environment variables
  *
  * Return: 0
  */
@@ -14,9 +14,9 @@ int main(int ac, char **av, char **env)
 	size_t len = 0;
 	ssize_t nread;
 	char **args;
+	int line_nb = 1;
 
 	(void)ac;
-	(void)av;
 
 	while (1)
 	{
@@ -35,16 +35,18 @@ int main(int ac, char **av, char **env)
 		{
 			if (!path(args, env))
 			{
-				fprintf(stderr, "%s: command not found\n", args[0]);
+				fprintf(stderr, "%s: %d: %s: not found\n",
+						av[0], line_nb, args[0]);
 				free_arr(args);
+				line_nb++;
 				continue;
 			}
 		}
 
 		fork_(args, env);
 		free_arr(args);
+		line_nb++;
 	}
-
 	free(line);
 	return (0);
 }
