@@ -1,49 +1,49 @@
 #include "shell.h"
 
 /**
- * path - Function that finds the path of a command.
- * @args: Array of command and arguments.
- * @env: Environment variables.
- * Return: path of the command, or NULL.
+ * path - Resolves command path using PATH
+ * @args: Command arguments
+ * @env: Environment variables
+ *
+ * Return: args if path found or NULL if not
  */
 char **path(char *args[], char **env)
 {
+	char *path_var = NULL, *path_copy, *dir, *full;
 	size_t i = 0;
-	char *path_env = NULL;
-	char *token, *full_path;
 
 	while (env[i])
 	{
 		if (strncmp(env[i], "PATH=", 5) == 0)
-		{
-			path_env = strdup(env[i] + 5);
-			break;
-		}
+			path_var = env[i] + 5;
 		i++;
 	}
-	if (!path_env)
+
+	if (!path_var || path_var[0] == '\0')
 		return (NULL);
 
-	token = strtok(path_env, ":");
-	while (token)
+	path_copy = strdup(path_var);
+	if (!path_copy)
+		return (NULL);
+
+	dir = strtok(path_copy, ":");
+	while (dir)
 	{
-		full_path = malloc(strlen(token) + strlen(args[0]) + 2);
-		if (!full_path)
-		{
-			free(path_env);
-			exit(1);
-		}
-		sprintf(full_path, "%s/%s", token, args[0]);
-		if (access(full_path, X_OK) == 0)
+		full = malloc(strlen(dir) + strlen(args[0]) + 2);
+		if (!full)
+			break;
+
+		sprintf(full, "%s/%s", dir, args[0]);
+		if (access(full, X_OK) == 0)
 		{
 			free(args[0]);
-			args[0] = full_path;
-			free(path_env);
+			args[0] = full;
+			free(path_copy);
 			return (args);
 		}
-		free(full_path);
-		token = strtok(NULL, ":");
+		free(full);
+		dir = strtok(NULL, ":");
 	}
-	free(path_env);
+	free(path_copy);
 	return (NULL);
 }
