@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * main - Simple shell with PATH handling
- * @ac: Argument count
- * @av: Argument vector
- * @env: Environment variables
+ * main - simple shell
+ * @ac: argument count (unused)
+ * @av: argument vector
+ * @env: environment
  *
  * Return: 0
  */
@@ -15,34 +15,31 @@ int main(int ac, char **av, char **env)
 	ssize_t nread;
 	char **args;
 	int line_nb = 1;
+	int interactive;
 
 	(void)ac;
+	interactive = isatty(STDIN_FILENO);
 
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
+		if (interactive)
 			printf("$ ");
-
 		nread = getline(&line, &len, stdin);
 		if (nread == -1)
 			break;
-
 		args = strtok_array(line);
 		if (!args)
-			continue;
-
-		if (args[0][0] != '/' && args[0][0] != '.')
 		{
-			if (!path(args, env))
-			{
-				fprintf(stderr, "%s: %d: %s: not found\n",
-						av[0], line_nb, args[0]);
-				free_arr(args);
-				line_nb++;
-				continue;
-			}
+			line_nb++;
+			continue;
 		}
-
+		if (args[0][0] != '/' && args[0][0] != '.' && !path(args, env))
+		{
+			handle_not_found(av, args,
+							 line_nb, interactive, line);
+			line_nb++;
+			continue;
+		}
 		fork_(args, env);
 		free_arr(args);
 		line_nb++;
