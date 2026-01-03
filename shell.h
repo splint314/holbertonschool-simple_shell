@@ -14,5 +14,7 @@ size_t strtok_array_len(char *str);
 char **path(char *args[], char **env);
 void free_arr(char **args);
 void fork_(char *args[], char **env);
+void handle_not_found(char **av, char **args,
+                      int line_nb, int interactive, char *line);
 
 #endif
